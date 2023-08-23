@@ -15,3 +15,14 @@ const getData = async (state) => {
 }
 
 export default getData;
+
+// const getImages = async () => {
+    
+//     try {
+//         const resp = await axios.get('')
+//     }
+
+//     catch(error) {
+//         console.log('error',error)
+//     }
+// }
