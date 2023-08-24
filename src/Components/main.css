@@ -1,4 +1,4 @@
-body {
+#main {
     background-image: url('../assets/rick-and-morty-cool.jpg');
     background-size: contain;
 }
