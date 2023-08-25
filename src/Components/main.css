@@ -2,3 +2,18 @@
     background-image: url('../assets/rick-and-morty-cool.jpg');
     background-size: contain;
 }
+#single {
+    background-color: #282828;
+    height: 100vh;
+}
+.accordion-button {
+    background-color: #282828 !important;
+    color: white !important;
+}
+.accordion-body {
+    background-color: #282a36 !important;
+}
+.page-link {
+    background: #282828 !important;
+    color: #b8c257 !important;
+}

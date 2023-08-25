@@ -1,9 +1,9 @@
 import axios from 'axios';
 
-const getData = async (state) => {
+const getData = async (name, status, species, state, page) => {
 
     try {
-        const resp = await axios.get('https://rickandmortyapi.com/api/character')
+        const resp = await axios.get(`https://rickandmortyapi.com/api/character/?name=${name}&status=${status}&species=${species}&page=${page}`)
         const { data } = resp
         const [...personajes] = data.results
         state([...personajes])
@@ -14,14 +14,13 @@ const getData = async (state) => {
     }
 }
 
-const filterData = async (name, status, species, state) => {
+const singleData = async (id, state) => {
     
     try {
-        console.log(name);
-        const resp = await axios.get(`https://rickandmortyapi.com/api/character/?name=${name}&status=${status}&species=${species}`)
+        const resp = await axios.get(`https://rickandmortyapi.com/api/character/${id}`)
         const { data } = resp
-        const [...personajes] = data.results
-        state([...personajes])
+        const character = data
+        state(character) 
     }
 
     catch(error) {
@@ -29,7 +28,7 @@ const filterData = async (name, status, species, state) => {
     }
 }
 
-export { getData, filterData }
+export { getData, singleData }
 
 
 
