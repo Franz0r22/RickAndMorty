@@ -1,6 +1,6 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useParams } from 'react-router-dom'
 import { getData } from "../Axios/Axios.js";
 
 import Container from "react-bootstrap/Container";
@@ -29,11 +29,13 @@ const App = () => {
   const [status, setStatus] = useState("");
   const [species, setSpecies] = useState("");
   const [page, setPage] = useState(null);
+  const [pageCount, setPageCount] = useState("");
 
+console.log(pageCount)
   //Paginacion
   const paginationItems = () => {
     let items = [];
-    for (let number = 1; number <= 42; number++) {
+    for (let number = 1; number <= pageCount; number++) {
       items.push(
         <Pagination.Item
           key={number}
@@ -64,17 +66,20 @@ const App = () => {
   //Manejadores
   const handleFilterStatus = (newStatus) => {
     setStatus(newStatus);
-   };
-   const handleFilterSpecies = (newSpecies) => {
+  };
+  const handleFilterSpecies = (newSpecies) => {
     setSpecies(newSpecies);
-   };
-   const handlePageClick = (number) => {
+  };
+  const handlePageClick = (number) => {
     setPage(number);
   };
+  const handleResetClick = (newState, setState) => {
+    setState(newState);
+  }
 
   //Axios 
   useEffect(() => {
-    getData(name, status, species, setCharacters, page);
+    getData(name, status, species, setCharacters, page, setPageCount);
   }, [name, status, species, page]);
 
   return (
@@ -94,7 +99,7 @@ const App = () => {
             <Accordion.Item eventKey="0">
               <Accordion.Header>
                 <FontAwesomeIcon className="me-3" icon={faFilter} />
-                Especies
+                Filter by Species
               </Accordion.Header>
               <Accordion.Body>
                 {especies.map((especie, index) => (
@@ -107,12 +112,18 @@ const App = () => {
                     {especie}
                   </Button>
                 ))}
+                  <Button
+                  variant="danger"
+                  onClick={() => handleResetClick('', setSpecies)}
+                  >
+                  Reset
+                  </Button>
               </Accordion.Body>
             </Accordion.Item>
             <Accordion.Item eventKey="1">
               <Accordion.Header>
                 <FontAwesomeIcon className="me-3" icon={faFilter} />
-                Estado
+                Filter by Status
               </Accordion.Header>
               <Accordion.Body>
                 <Button
@@ -130,10 +141,17 @@ const App = () => {
                   Dead
                 </Button>
                 <Button
+                  className="me-2"
                   variant="warning"
                   onClick={() => handleFilterStatus("Unknown")}
                 >
                   Unknown
+                </Button>
+                <Button
+                variant="danger"
+                onClick={() => handleResetClick('', setStatus)}
+                >
+                Reset
                 </Button>
               </Accordion.Body>
             </Accordion.Item>

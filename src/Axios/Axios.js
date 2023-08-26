@@ -1,12 +1,14 @@
 import axios from 'axios';
 
-const getData = async (name, status, species, state, page) => {
+const getData = async (name, status, species, state, page, pageCount) => {
 
     try {
         const resp = await axios.get(`https://rickandmortyapi.com/api/character/?name=${name}&status=${status}&species=${species}&page=${page}`)
         const { data } = resp
         const [...personajes] = data.results
+        const pages = data.info.pages
         state([...personajes])
+        pageCount(pages)
     }
 
     catch(error) {
