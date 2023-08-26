@@ -72,7 +72,17 @@ const Single = () => {
             </Col>
           </Row>
         </Container>          
-      ) : ('Sin personaje') }
+      ) : (
+      <Container>
+        <Row>
+          <Col className='mt-5 text-center'>
+            <h1 className="text-white mb-5">No existe un personaje con este ID</h1>
+            <a href="/"><Button variant="warning">Ir al inicio</Button></a>
+          </Col>
+        </Row>
+      </Container>
+        
+      ) }
     </main>
   )
 }
