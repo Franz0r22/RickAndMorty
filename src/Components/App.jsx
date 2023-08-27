@@ -1,6 +1,6 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { useParams } from 'react-router-dom'
+import { useParams } from "react-router-dom";
 import { getData } from "../Axios/Axios.js";
 
 import Container from "react-bootstrap/Container";
@@ -10,14 +10,13 @@ import Button from "react-bootstrap/Button";
 import Badge from "react-bootstrap/Badge";
 import Card from "react-bootstrap/Card";
 import Accordion from "react-bootstrap/Accordion";
-import Pagination from 'react-bootstrap/Pagination';
+import Pagination from "react-bootstrap/Pagination";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPerson } from "@fortawesome/free-solid-svg-icons";
 import { faHeartPulse } from "@fortawesome/free-solid-svg-icons";
 import { faVenusMars } from "@fortawesome/free-solid-svg-icons";
 import { faLocust } from "@fortawesome/free-solid-svg-icons";
 import { faFilter } from "@fortawesome/free-solid-svg-icons";
-
 
 import "./main.css";
 
@@ -30,8 +29,26 @@ const App = () => {
   const [species, setSpecies] = useState("");
   const [page, setPage] = useState(null);
   const [pageCount, setPageCount] = useState("");
+  const [isActive, setIsActive] = useState(null);
+  const [isActiveStatus, setIsActiveStatus] = useState(null);
 
-console.log(pageCount)
+  //Especies
+  const especies = [
+    "Human",
+    "Alien",
+    "Humanoid",
+    "Poopybutthole",
+    "Mythological",
+    "Unknown",
+    "Animal",
+    "Disease",
+    "Robot",
+    "Cronenberg",
+  ];
+
+  //Status
+  const estados = ["Alive", "Dead", "Unknown"];
+
   //Paginacion
   const paginationItems = () => {
     let items = [];
@@ -49,35 +66,26 @@ console.log(pageCount)
     return items;
   };
 
-  //Especies
-  const especies = [
-    "Human",
-    "Alien",
-    "Humanoid",
-    "Poopybutthole",
-    "Mythological",
-    "Unknown",
-    "Animal",
-    "Disease",
-    "Robot",
-    "Cronenberg",
-  ];
-
   //Manejadores
-  const handleFilterStatus = (newStatus) => {
+  const handleFilterStatus = (newStatus, index) => {
     setStatus(newStatus);
+    setIsActiveStatus(index !== isActiveStatus ? index : isActiveStatus);
+    setPage(1);
   };
-  const handleFilterSpecies = (newSpecies) => {
+  const handleFilterSpecies = (newSpecies, index) => {
     setSpecies(newSpecies);
+    setIsActive(index !== isActive ? index : isActive);
+    setPage(1);
   };
   const handlePageClick = (number) => {
     setPage(number);
   };
-  const handleResetClick = (newState, setState) => {
+  const handleResetClick = (newState, setState, unactive, setStateFilter) => {
     setState(newState);
-  }
+    setStateFilter(unactive);
+  };
 
-  //Axios 
+  //Axios
   useEffect(() => {
     getData(name, status, species, setCharacters, page, setPageCount);
   }, [name, status, species, page]);
@@ -95,7 +103,7 @@ console.log(pageCount)
           </Col>
         </Row>
         <Row className="mb-3">
-          <Accordion defaultActiveKey={["0"]} alwaysOpen>
+          <Accordion defaultActiveKey={["0", "1"]} alwaysOpen>
             <Accordion.Item eventKey="0">
               <Accordion.Header>
                 <FontAwesomeIcon className="me-3" icon={faFilter} />
@@ -105,19 +113,21 @@ console.log(pageCount)
                 {especies.map((especie, index) => (
                   <Button
                     className="me-2 mb-1 mb-lg-0"
-                    variant="warning"
+                    variant={index === isActive ? "success" : "warning"}
                     key={index}
-                    onClick={() => handleFilterSpecies(especie)}
+                    onClick={() => handleFilterSpecies(especie, index)}
                   >
                     {especie}
                   </Button>
                 ))}
-                  <Button
+                <Button
                   variant="danger"
-                  onClick={() => handleResetClick('', setSpecies)}
-                  >
+                  onClick={() =>
+                    handleResetClick("", setSpecies, null, setIsActive)
+                  }
+                >
                   Reset
-                  </Button>
+                </Button>
               </Accordion.Body>
             </Accordion.Item>
             <Accordion.Item eventKey="1">
@@ -126,32 +136,21 @@ console.log(pageCount)
                 Filter by Status
               </Accordion.Header>
               <Accordion.Body>
+                {estados.map((estado, index) => (
+                  <Button
+                    className="me-2"
+                    variant={index === isActiveStatus ? "success" : "warning"}
+                    key={index}
+                    onClick={() => handleFilterStatus(estado, index)}
+                  >
+                    {estado}
+                  </Button>
+                ))}
                 <Button
-                  className="me-2"
-                  variant="warning"
-                  onClick={() => handleFilterStatus("Alive")}
+                  variant="danger"
+                  onClick={() => handleResetClick("", setStatus, null, setIsActiveStatus)}
                 >
-                  Alive
-                </Button>
-                <Button
-                  className="me-2"
-                  variant="warning"
-                  onClick={() => handleFilterStatus("Dead")}
-                >
-                  Dead
-                </Button>
-                <Button
-                  className="me-2"
-                  variant="warning"
-                  onClick={() => handleFilterStatus("Unknown")}
-                >
-                  Unknown
-                </Button>
-                <Button
-                variant="danger"
-                onClick={() => handleResetClick('', setStatus)}
-                >
-                Reset
+                  Reset
                 </Button>
               </Accordion.Body>
             </Accordion.Item>
@@ -220,7 +219,9 @@ console.log(pageCount)
         </Row>
         <Row>
           <section className="d-flex justify-content-center">
-            <Pagination className="flex-wrap" size="sm">{paginationItems()}</Pagination>
+            <Pagination className="flex-wrap" size="sm">
+              {paginationItems()}
+            </Pagination>
           </section>
         </Row>
       </Container>
