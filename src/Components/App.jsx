@@ -1,6 +1,6 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useLocation, useNavigate } from 'react-router-dom';
 import { getData } from "../Axios/Axios.js";
 
 import Container from "react-bootstrap/Container";
@@ -21,13 +21,18 @@ import { faFilter } from "@fortawesome/free-solid-svg-icons";
 import "./main.css";
 
 const App = () => {
+  
+  //Obtiene parametros de búsqueda
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const navigate = useNavigate();
+
   //Estados
   const [characters, setCharacters] = useState(null);
-  //const [filteredCharacters, setFilteredCharacters] = useState([]);
   const [name, setName] = useState("");
-  const [status, setStatus] = useState("");
-  const [species, setSpecies] = useState("");
-  const [page, setPage] = useState(null);
+  const [status, setStatus] = useState(queryParams.get("status") || "");
+  const [species, setSpecies] = useState(queryParams.get("species") || "");
+  const [page, setPage] = useState(1);
   const [pageCount, setPageCount] = useState("");
   const [isActive, setIsActive] = useState(null);
   const [isActiveStatus, setIsActiveStatus] = useState(null);
@@ -88,6 +93,9 @@ const App = () => {
   //Axios
   useEffect(() => {
     getData(name, status, species, setCharacters, page, setPageCount);
+    name || status || species
+      ? navigate(`/?name=${name}&status=${status}&species=${species}&page=${page}`)
+      : navigate('/');
   }, [name, status, species, page]);
 
   return (
