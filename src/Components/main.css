@@ -17,3 +17,10 @@
     background: #282828 !important;
     color: #b8c257 !important;
 }
+.form-control {
+    background-color: #282828 !important;
+    color: white !important;
+}
+.form-control::placeholder {
+    color: white !important;
+}

@@ -1,11 +1,13 @@
 import React from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useLocation, useNavigate } from 'react-router-dom';
 import { getData } from "../Axios/Axios.js";
 
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import Form from "react-bootstrap/Form";
+import InputGroup from 'react-bootstrap/InputGroup';
 import Button from "react-bootstrap/Button";
 import Badge from "react-bootstrap/Badge";
 import Card from "react-bootstrap/Card";
@@ -17,6 +19,8 @@ import { faHeartPulse } from "@fortawesome/free-solid-svg-icons";
 import { faVenusMars } from "@fortawesome/free-solid-svg-icons";
 import { faLocust } from "@fortawesome/free-solid-svg-icons";
 import { faFilter } from "@fortawesome/free-solid-svg-icons";
+import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+
 
 import "./main.css";
 
@@ -36,6 +40,7 @@ const App = () => {
   const [pageCount, setPageCount] = useState("");
   const [isActive, setIsActive] = useState(null);
   const [isActiveStatus, setIsActiveStatus] = useState(null);
+  const nameRef = useRef(null);
 
   //Especies
   const especies = [
@@ -77,6 +82,10 @@ const App = () => {
     setIsActiveStatus(index !== isActiveStatus ? index : isActiveStatus);
     setPage(1);
   };
+  const handleFilterName = () => {
+    setName(nameRef.current.value);
+    setPage(1);
+  };
   const handleFilterSpecies = (newSpecies, index) => {
     setSpecies(newSpecies);
     setIsActive(index !== isActive ? index : isActive);
@@ -89,6 +98,9 @@ const App = () => {
     setState(newState);
     setStateFilter(unactive);
   };
+  const handleSubmit = (event) => {
+    event.preventDefault();
+  }
 
   //Axios
   useEffect(() => {
@@ -108,6 +120,24 @@ const App = () => {
               alt="rick and morty logo"
               width={350}
             />
+          </Col>
+        </Row>
+        <Row className="d-flex justify-content-center align-items-center mt-3">
+          <Col lg={6}>
+            <Form onSubmit={handleSubmit}>
+              <InputGroup className="mb-3">
+                <Form.Control
+                  placeholder="Search a character..."
+                  aria-label="Search a character"
+                  id="search-rym"
+                  ref={nameRef}
+                />
+                <Button
+                variant="warning"
+                onClick={handleFilterName}
+                ><FontAwesomeIcon icon={faMagnifyingGlass} /></Button>
+              </InputGroup>
+            </Form>
           </Col>
         </Row>
         <Row className="mb-3">
@@ -156,7 +186,9 @@ const App = () => {
                 ))}
                 <Button
                   variant="danger"
-                  onClick={() => handleResetClick("", setStatus, null, setIsActiveStatus)}
+                  onClick={() =>
+                    handleResetClick("", setStatus, null, setIsActiveStatus)
+                  }
                 >
                   Reset
                 </Button>
